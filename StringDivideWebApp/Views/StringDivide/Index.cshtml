@@ -1,0 +1,14 @@
+﻿@model StringDivideWebApp.Models.StringDivideModel
+
+<form asp-action="ProcessStringArray" method="post">
+    <input type="text" name="InputArray" placeholder="Enter comma-separated array">
+    <button type="submit">Process</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.ProcessedResult))
+{
+    <div>
+        <h2>Processed Result:</h2>
+        <p>@Model.ProcessedResult</p>
+    </div>
+}
