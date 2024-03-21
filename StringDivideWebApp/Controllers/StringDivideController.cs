@@ -24,7 +24,13 @@ namespace StringDivideWebApp.Controllers
         public IActionResult ProcessStringArray(StringDivideModel model)
         {
             // Splitting comma-separated string into array
-            string[] inputArray = model.InputArray.Split(',');
+            string[] inputArray = model.InputArray.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (inputArray.Length == 0)
+            {
+                ModelState.AddModelError("InputArray", "Please provide at least one element in the array.");
+                return View("Index", model);
+            }
 
             // Perform any required operations here
             string processedResult = processing_string(inputArray); // Placeholder, perform your operations
