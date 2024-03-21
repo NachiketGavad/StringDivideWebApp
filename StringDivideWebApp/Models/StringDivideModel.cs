@@ -6,8 +6,10 @@ namespace StringDivideWebApp.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [Required]
         public string InputArray { get; set; }
+
         public string ProcessedResult { get; set; }
     }
-
 }
