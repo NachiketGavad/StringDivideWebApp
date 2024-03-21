@@ -22,10 +22,10 @@ namespace StringDivideWebApp.Controllers
         [HttpPost]
         public IActionResult ProcessStringArray(StringDivideModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return View("Index", model);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View("Index", model);
+            //}
 
             // Splitting comma-separated string into array
             string[] inputArray = model.InputArray.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
@@ -35,8 +35,8 @@ namespace StringDivideWebApp.Controllers
 
             // Store input and processed result in the database
             model.ProcessedResult = processedResult;
-            _context.StringDivideModels.Add(model);
-            _context.SaveChanges();
+            //_context.StringDivideModels.Add(model);
+            //_context.SaveChanges();
 
             // Display the processed result
             model.ProcessedResult = processedResult;
