@@ -1,0 +1,86 @@
+﻿@model StringDivideWebApp.Models.StringDivideModel
+
+
+
+<!-- Loading indicator styles -->
+<style>
+    /* Loader styles */
+    .loader {
+        display: none; /* Initially hidden */
+        text-align: center;
+        font-size: 36px;
+    }
+
+    /* Dot animation */
+    @@keyframes moveDots {
+        0% { transform: translateX(-30px); }
+        25% { transform: translateX(0px); }
+        50% { transform: translateX(30px); }
+        75% { transform: translateX(0px); }
+        100% { transform: translateX(-30px); }
+    }
+
+    .dot {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        margin: 0 10px;
+        background-color: #3498db; /* Blue */
+        border-radius: 50%;
+        animation: moveDots 2s linear infinite; /* Move dots animation */
+    }
+</style>
+
+
+
+<!-- Your main content -->
+<h1>Welcome to My Website</h1>
+
+<!-- Form -->
+@using (Html.BeginForm("ProcessString", "Home", FormMethod.Post, new { id = "myForm" }))
+{
+    <div>
+        @Html.LabelFor(model => model.InputArray)
+        @Html.TextBoxFor(model => model.InputArray)
+    </div>
+    <button type="submit" id="submitBtn">Submit</button>
+}
+
+<!-- Loading indicator -->
+<div id="loadingIndicator" class="loader">
+    Loading
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+</div>
+
+<!-- Partial View Placeholder -->
+<div id="formOutputPartial"></div>
+
+@section scripts {
+    <script>
+        // Submit form using AJAX
+        $('#myForm').submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Show loading indicator
+            $('#loadingIndicator').show();
+
+            // Serialize form data
+            var formData = $(this).serialize();
+
+            // Submit form data via AJAX
+            $.ajax({
+                url: $(this).attr('action'),
+                type: $(this).attr('method'),
+                data: formData,
+                success: function (result) {
+                    $('#formOutputPartial').html(result); // Update partial view with returned data
+                    // Show loading indicator
+                    $('#loadingIndicator').hide();
+
+                }
+            });
+        });
+    </script>
+}

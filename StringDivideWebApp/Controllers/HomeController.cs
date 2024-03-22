@@ -2,6 +2,7 @@
 using StringDivideWebApp.Models;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 
 namespace StringDivideWebApp.Controllers
 {
@@ -28,24 +29,80 @@ namespace StringDivideWebApp.Controllers
             //}
 
             // Splitting comma-separated string into array
-            string[] inputArray = model.InputArray.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+            //string[] inputArray = model.InputArray.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
 
+            bool formISValid = ModelState.IsValid;
+            foreach (var key in ModelState.Keys)
+            {
+                var state = ModelState[key];
+                if (state.Errors.Any())
+                {
+                    var errors = state.Errors.Select(e => e.ErrorMessage);
+                    // Log or inspect the errors here to understand why the model state is not valid
+                }
+            }
+
+            string processedResult = string.Empty;
             // Perform processing of the string array
-            string processedResult = processing_string(inputArray);
+            if (model.InputArray != null)
+            {
+                processedResult = processing_string(model.InputArray);
+            }
 
             // Store input and processed result in the database
             model.ProcessedResult = processedResult;
-            //_context.StringDivideModels.Add(model);
-            //_context.SaveChanges();
+            _context.StringDivideModels.Add(model);
+            _context.SaveChanges();
 
             // Display the processed result
             model.ProcessedResult = processedResult;
             return View("Index", model);
         }
 
-
-        public string processing_string(string[] inputArray)
+        [HttpGet]
+        public IActionResult Index2()
         {
+            var model = new StringDivideModel();
+            return View("StringProcessPartial", model);
+        }
+
+        [HttpPost]
+        public PartialViewResult ProcessString(StringDivideModel model)
+        {
+            var processedString = string.Empty;
+
+            foreach (var key in ModelState.Keys)
+            {
+                var state = ModelState[key];
+                if (state.Errors.Any())
+                {
+                    var errors = state.Errors.Select(e => e.ErrorMessage);
+                    // Log or inspect the errors here to understand why the model state is not valid
+
+                }
+            }
+            if (!ModelState.IsValid)
+            {
+                // display errors here if required 
+                //return a different partial view to display errors 
+            }
+
+            processedString = processing_string(model.InputArray);
+            model.ProcessedResult = processedString;
+
+            _context.StringDivideModels.Add(model);
+            _context.SaveChanges();
+
+
+            return PartialView("_ProcessedResultPartial", model);
+
+        }
+
+
+        public string processing_string(string input)
+        {
+            string[] inputArray = input.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+
             int maxLength = 0;
             string result = "";
 
