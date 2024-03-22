@@ -1,4 +1,4 @@
-﻿@model StringDivideWebApp.Models.StringDivideModel
+﻿@model StringDivideModel
 
 <div class="container text-center mx-auto col-5">
     <form id="stringForm" class="col text-center mt-5" asp-controller="Home" asp-action="ProcessStringArray" method="post">
@@ -11,21 +11,21 @@
     @Html.Partial("_ProcessedResultPartial", Model)    
 </div> 
 
-       @*<script>
-           document.getElementById('stringForm').addEventListener('submit', function (event) {
-               var inputArray = document.getElementById('inputArray').value.trim();
-               if (!inputArray) {
-                   alert('Please provide a non-empty input.');
-                   event.preventDefault();
-               } else {
-                   var inputArraySplit = inputArray.split(',');
-                   for (var i = 0; i < inputArraySplit.length; i++) {
-                       if (!inputArraySplit[i].trim()) {
-                           alert('Please provide a valid comma-separated array.');
-                           event.preventDefault();
-                           break;
-                       }
-                   }
-               }
-           });
-       </script>*@
+<script>
+    document.getElementById('stringForm').addEventListener('submit', function (event) {
+        var inputArray = document.getElementById('inputArray').value.trim();
+        if (!inputArray) {
+            alert('Please provide a non-empty input.');
+            event.preventDefault();
+        } else {
+            var inputArraySplit = inputArray.split(',');
+            for (var i = 0; i < inputArraySplit.length; i++) {
+                if (!inputArraySplit[i].trim()) {
+                    alert('Please provide a valid comma-separated array.');
+                    event.preventDefault();
+                    break;
+                }
+            }
+        }
+    });
+</script>
