@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "Calculator";
+}
+
+
+<div class="container mt-5 col-md-5 text-center">
+    <h1>Calculator</h1>
+    <form id="calculatorForm">
+        <div class="mb-3">
+            <input type="number" class="form-control" id="num1" name="num1" placeholder="Enter first number" required>
+        </div>
+        <div class="mb-3">
+            <select class="form-select" id="operation" name="operation">
+                <option value="add">Add</option>
+                <option value="subtract">Subtract</option>
+                <option value="multiply">Multiply</option>
+                <option value="divide">Divide</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <input type="number" class="form-control" id="num2" name="num2" placeholder="Enter second number" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Calculate</button>
+    </form>
+
+    <div class="mt-3">
+        <h3>Result:</h3>
+        <div id="result"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#calculatorForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Calculate")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#result').text(response);
+                    }
+                });
+            });
+        });
+    </script>
+}
