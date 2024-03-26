@@ -74,6 +74,15 @@ namespace StringDivideWebApp.Controllers
         [HttpPost]
         public PartialViewResult ProcessString(StringDivideModel model)
         {
+
+            // Check if the input is blank
+            if (string.IsNullOrWhiteSpace(model.InputArray))
+            {
+                ModelState.AddModelError("InputArray", "Input cannot be blank");
+                // Return the same view with validation errors
+                return PartialView("_ProcessedResultPartial", model);
+            }
+
             var processedString = string.Empty;
 
             foreach (var key in ModelState.Keys)
