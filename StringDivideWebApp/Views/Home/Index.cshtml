@@ -8,11 +8,17 @@
             <button id="submitButton" class="btn btn-primary col text-center mt-3" type="submit">Process</button>
         </div>
     </form>
-    @Html.Partial("_ProcessedResultPartial", Model)    
+
+    <div id="resultContainer">
+        @Html.Partial("_ProcessedResultPartial", Model)
+    </div>
 </div> 
 
 <script>
     document.getElementById('stringForm').addEventListener('submit', function (event) {
+        // Clear previous result regardless of input validity
+        document.getElementById('resultContainer').innerHTML = '';
+
         var inputArray = document.getElementById('inputArray').value.trim();
         if (!inputArray) {
             alert('Please provide a non-empty input.');

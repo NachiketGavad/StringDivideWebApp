@@ -32,6 +32,11 @@ namespace StringDivideWebApp.Controllers
             //string[] inputArray = model.InputArray.Split(new[] { ',' }, System.StringSplitOptions.RemoveEmptyEntries);
 
             bool formISValid = ModelState.IsValid;
+
+            //if (!formISValid)
+            //{
+            //    return View("Index");
+            //}
             foreach (var key in ModelState.Keys)
             {
                 var state = ModelState[key];
