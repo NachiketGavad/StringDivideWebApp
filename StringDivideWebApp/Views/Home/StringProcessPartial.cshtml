@@ -1,134 +1,37 @@
-﻿@model StringDivideWebApp.Models.StringDivideModel
+﻿@model StringDivideModel
 
-
-
-<!-- Loading indicator styles -->
-<style>
-    /* Loader styles */
-    .loader {
-        display: none; /* Initially hidden */
-        text-align: center;
-        font-size: 36px;
-    }
-
-    /* Dot animation */
-    @@keyframes moveDots {
-        0% { transform: translateX(-30px); }
-        25% { transform: translateX(0px); }
-        50% { transform: translateX(30px); }
-        75% { transform: translateX(0px); }
-        100% { transform: translateX(-30px); }
-    }
-
-    .dot {
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        margin: 0 10px;
-        background-color: #3498db; /* Blue */
-        border-radius: 50%;
-        animation: moveDots 2s linear infinite; /* Move dots animation */
-    }
-</style>
-
-
-
-
-<div class="container col-md-6 mx-auto mt-5 text-center">
-    <!-- Your main content -->
-    <h1 class="mb-3">Welcome to My Website</h1>
-    <!-- Form -->
-    @using (Html.BeginForm("ProcessString", "Home", FormMethod.Post, new { id = "myForm" }))
-    {
-        @* <div>
-            @Html.LabelFor(model => model.InputArray)
-            @Html.TextBoxFor(model => model.InputArray)
-        </div> *@
-
-        <div class="form-group">
-            <input class="form-control input" id="inputArray" asp-for="InputArray" placeholder="Enter comma-separated array">
-            <span class="text-danger" id="inputArrayError"></span>
+<div class="container text-center mx-auto col-5">
+    <form id="stringForm" class="col text-center mt-5" asp-controller="Home" asp-action="ProcessStringArray" method="post">
+        <input class="form-control input" id="inputArray" type="text" name="InputArray" placeholder="Enter comma-separated array">
+        <span asp-validation-for="InputArray" class="text-danger"></span>
+        <div>
+            <button id="submitButton" class="btn btn-primary col text-center mt-3" type="submit">Process</button>
         </div>
+    </form>
 
-        <div class="mx-auto">
-            <button id="submitBtn" class="btn btn-primary col mt-3" type="submit">Submit</button>
-        </div>
-    }
-
-    <!-- Loading indicator -->
-    <div id="loadingIndicator" class="loader">
-        Loading
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
+    <div id="resultContainer">
+        @Html.Partial("_ProcessedResultPartial", Model)
     </div>
-
-    <!-- Partial View Placeholder -->
-    <div id="formOutputPartial"></div>
 </div>
 
-@section scripts {
-    <script>
-        // Submit form using AJAX
-        $('#myForm').submit(function (e) {
-            e.preventDefault(); // Prevent the default form submission
+<script>
+    document.getElementById('stringForm').addEventListener('submit', function (event) {
+        // Clear previous result regardless of input validity
+        document.getElementById('resultContainer').innerHTML = '';
 
-            // Serialize form data
-            var formData = $(this).serialize();
-
-            // Get the input value
-            var inputValue = $('#inputArray').val().trim();
-
-            // Get the error message span
-            var errorMessageSpan = $('#inputArrayError');
-
-            // Check if input is empty
-            if (!inputValue) {
-                // alert('Please provide a non-empty input.');
-                // using span instead alert
-                // $('#inputArrayError').text('Input is required.');
-                errorMessageSpan.text('Input is required.');
-                $('#formOutputPartial').hide(); // Hide the form output partial
-                event.preventDefault();
-                return;
-            }
-
-            // Split the input into an array by commas
-            var inputArraySplit = inputValue.split(',');
-
-            // Check each element of the array
+        var inputArray = document.getElementById('inputArray').value.trim();
+        if (!inputArray) {
+            alert('Please provide a non-empty input.');
+            event.preventDefault();
+        } else {
+            var inputArraySplit = inputArray.split(',');
             for (var i = 0; i < inputArraySplit.length; i++) {
-                // Trim each element and check if it's empty
                 if (!inputArraySplit[i].trim()) {
-                    // alert('Please provide a valid comma-separated array.');
-                    // using span instead alert
-                    // $('#inputArrayError').text('Please provide a valid comma-separated array.');
-                    errorMessageSpan.text('Please provide a valid comma-separated array.');
-                    $('#formOutputPartial').hide(); // Hide the form output partial
+                    alert('Please provide a valid comma-separated array.');
                     event.preventDefault();
-                    return;
+                    break;
                 }
             }
-
-            // If input is valid, clear the error message
-            errorMessageSpan.text('');
-
-            // Show loading indicator
-            $('#loadingIndicator').show();
-
-            // Submit form data via AJAX
-            $.ajax({
-                url: $(this).attr('action'),
-                type: $(this).attr('method'),
-                data: formData,
-                success: function (result) {
-                    $('#formOutputPartial').show();
-                    $('#formOutputPartial').html(result); // Update partial view with returned data
-                    // hide loading indicator
-                    $('#loadingIndicator').hide();
-
-                }
-            });
-        });
-    </script>
-}
+        }
+    });
+</script>

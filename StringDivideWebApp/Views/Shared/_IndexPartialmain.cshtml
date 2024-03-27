@@ -1,0 +1,30 @@
+﻿@model StringDivideModel
+
+    <!-- Form -->
+    @using (Html.BeginForm("ProcessString", "Home", FormMethod.Post, new { id = "myForm" }))
+    {
+        @* <div>
+    @Html.LabelFor(model => model.InputArray)
+    @Html.TextBoxFor(model => model.InputArray)
+    </div> *@
+
+        <div class="form-group">
+            <input class="form-control input" id="inputArray" asp-for="InputArray" placeholder="Enter comma-separated array">
+            <span class="text-danger" id="inputArrayError"></span>
+        </div>
+
+        <div class="mx-auto">
+            <button id="submitBtn" class="btn btn-primary col mt-3" type="submit">Submit</button>
+        </div>
+    }
+
+    <!-- Loading indicator -->
+    <div id="loadingIndicator" class="loader">
+        Loading
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <!-- Partial View Placeholder -->
+    <div id="formOutputPartial"></div>
