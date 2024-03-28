@@ -1,8 +1,12 @@
 ﻿@model StringDivideWebApp.Models.StringDivideModel
-@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor accessor
+
+@* @using Microsoft.AspNetCore.Identity
 @using StringDivideWebApp.Areas.Identity.Data
 
-@inject SignInManager<StringDivideWebAppUser> SignInManager
+
+@inject SignInManager<StringDivideWebAppUser> SignInManager *@
 
 <!-- Loading indicator styles -->
 <style>
@@ -52,18 +56,19 @@
     <!-- Your main content -->
     <h1 class="mb-3">Welcome to My Website</h1>
 
-    @if (SignInManager.IsSignedIn(User))
-    {
-        <partial name="_IndexPartialmain" />
+    @{
+        ViewBag.myUser = @accessor.HttpContext.Session.GetString("UserSession");
+        if (@accessor.HttpContext.Session.GetString("UserSession") != null)
+        {
+            <partial name="_IndexPartialmain" />
+        }
+        else
+        {
+            <partial name="_PartialPleaseLogin" />
+        }
     }
-    else
-    {
-        <p class="text-info">Please login</p>
-        <a class="btn btn-outline-light mx-2" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-        <a class="btn btn-outline-light mx-2" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    }
-
 </div>
+
 
 @section scripts {
     <script>

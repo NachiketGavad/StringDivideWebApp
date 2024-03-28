@@ -11,5 +11,6 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<StringDivideModel> StringDivideModels { get; set; }
+    public DbSet<StringDivideAppUser> StringDivideAppUsers { get; set; }
 }
 

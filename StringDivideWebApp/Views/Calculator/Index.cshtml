@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor accessor
+
+@{
+    ViewData["Title"] = "Calculator";
+    ViewBag.myUser = @accessor.HttpContext.Session.GetString("UserSession");
+}
+
+<div class="container mt-5 col-md-5 text-center">
+    @if (@accessor.HttpContext.Session.GetString("UserSession") != null)
+    {
+        <partial name="_CalculatorPartialMain" />
+    }
+    else
+    {
+        <partial name="_PartialPleaseLogin" />
+    }
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            $('#calculatorForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Calculate")',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('#result').text(response);
+                    }
+                });
+            });
+        });
+    </script>
+}
