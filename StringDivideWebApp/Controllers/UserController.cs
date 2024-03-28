@@ -25,18 +25,53 @@ namespace StringDivideWebApp.Controllers
         [HttpPost]
         public IActionResult Register(StringDivideAppUser user)
         {
-            if(ModelState.IsValid){
-                _context.StringDivideAppUsers.Add(user);
-                _context.SaveChanges();
-                return RedirectToAction("Login");
+            if (ModelState.IsValid)
+            {
+                // Check if the user with the same email already exists
+                var existingUser = _context.StringDivideAppUsers.FirstOrDefault(u => u.email == user.email);
+
+                if (existingUser == null)
+                {
+                    // If the user does not exist, add them to the database
+                    _context.StringDivideAppUsers.Add(user);
+                    _context.SaveChanges();
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    // If the user already exists, return an error indicating duplication
+                    ModelState.AddModelError("", "Error, Please check Email And Password");
+                    return View();
+                }
             }
             return View();
         }
+
         public IActionResult Login()
         {
             return View();
         }
         
+        [HttpPost]
+        public IActionResult Login(StringDivideAppUser user)
+        {
+            // Where always not null
+            //var myuser = _context.StringDivideAppUsers.Where(x=>x.email==user.email && x.password==user.password);
+            var myuser = _context.StringDivideAppUsers.FirstOrDefault(x => x.email == user.email && x.password == user.password);
+
+            if (myuser != null)
+            {
+                HttpContext.Session.SetString("UserSession", user.email);
+                ViewBag.Mysession= HttpContext.Session.GetString("UserSession").ToString();
+                return RedirectToAction("Index","Home");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Invalid email or password.");
+                return RedirectToAction("Login");
+            }
+            return View();
+        }
         public IActionResult Logout()
         {
             if (HttpContext.Session.GetString("UserSession") != null)
@@ -46,21 +81,5 @@ namespace StringDivideWebApp.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
-        public IActionResult Login(StringDivideAppUser user)
-        {
-            var myuser = _context.StringDivideAppUsers.Where(x=>x.email==user.email && x.password==user.password);
-            if (myuser != null)
-            {
-                HttpContext.Session.SetString("UserSession", user.email);
-                ViewBag.Mysession= HttpContext.Session.GetString("UserSession").ToString();
-                return RedirectToAction("Index","Home");
-            }
-            else
-            {
-                return RedirectToAction("Login");
-            }
-            return View();
-        }
     }
 }
