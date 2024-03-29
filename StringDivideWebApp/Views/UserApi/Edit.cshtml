@@ -17,16 +17,16 @@
             <div class="form-group">
                 <label asp-for="name" class="control-label"></label>
                 <input asp-for="name" class="form-control" />
-                <span asp-validation-for="name" value="@Model.name" class="text-danger"></span>
+                <span asp-validation-for="name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="email" class="control-label">Email</label>
+                <label asp-for="email" class="control-label"></label>
                 <input asp-for="email" class="form-control" />
-                <span asp-validation-for="email" value="@Model.email" class="text-danger"></span>
+                <span asp-validation-for="email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="password" class="control-label">Password</label>
-                <input type="password" asp-for="password" value="@Model.password" class="form-control" />
+                <label asp-for="password" class="control-label"></label>
+                <input asp-for="password" class="form-control" />
                 <span asp-validation-for="password" class="text-danger"></span>
             </div>
             <div class="form-group">

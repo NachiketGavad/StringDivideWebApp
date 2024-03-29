@@ -7,7 +7,7 @@ namespace StringDivideWebApp.Controllers
 {
     public class UserApiController : Controller
     {
-        public string url = "https://localhost:7166/api/StringDivideUser";
+        public string url = "https://localhost:7166/api/StringDivideUser/";
         private HttpClient client= new HttpClient();
         public IActionResult Index()
         {
@@ -48,7 +48,7 @@ namespace StringDivideWebApp.Controllers
         public IActionResult Edit(int id)
         {
             StringDivideAppUser std = new StringDivideAppUser();
-            HttpResponseMessage response = client.GetAsync(url+id).Result;
+            HttpResponseMessage response = client.GetAsync(url + id).Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -65,11 +65,11 @@ namespace StringDivideWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(int id, StringDivideAppUser std)
+        public IActionResult Edit(StringDivideAppUser std)
         {
             string data = JsonConvert.SerializeObject(std);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PostAsync(url+std.Id, content).Result;
+            HttpResponseMessage response = client.PutAsync(url+std.Id, content).Result;
             if (response.IsSuccessStatusCode)
             {
                 TempData["update-message"] = "User updated...";
