@@ -21,6 +21,21 @@ To divide the array of strings, follow these requirements:
 2. Click the "Submit" button to perform the operation.
 3. View the output displayed on the screen.
 4. The input and output are stored in the database for future reference.
+5. 
+## Basic Calculator
+In addition to array operations, this application also features a basic calculator. You can perform simple arithmetic operations using the calculator provided.
+
+## Register
+New users can create an account by navigating to the registration page and providing the required information, including username, email, and password. Upon successful registration, users gain access to additional features and personalized data.
+
+To register:
+1. Navigate to the registration page.
+2. Fill out the registration form with your desired username, email, and password.
+3. Click the "Register" or "Sign Up" button to create your account.
+4. You can log in using your credentials and access the full functionality of the application.
+
+## Login
+To access features, users can log in using their credentials.
 
 ## Technologies Used
 - ASP.NET Core
