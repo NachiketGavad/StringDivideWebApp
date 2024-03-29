@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StringDivideWebApp.Models;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace StringDivideWebApp.Controllers
@@ -9,6 +10,13 @@ namespace StringDivideWebApp.Controllers
     {
         public string url = "https://localhost:7166/api/StringDivideUser/";
         private HttpClient client= new HttpClient();
+
+        private readonly IPasswordService _passwordService;
+
+        public UserApiController(IPasswordService passwordService)
+        {
+            _passwordService = passwordService;
+        }
         public IActionResult Index()
         {
             List<StringDivideAppUser> users = new List<StringDivideAppUser>();
@@ -33,13 +41,20 @@ namespace StringDivideWebApp.Controllers
         [HttpPost]
         public IActionResult Create(StringDivideAppUser std)
         {
-            string data = JsonConvert.SerializeObject(std);
-            StringContent content = new StringContent(data, Encoding.UTF8,"application/json");
-            HttpResponseMessage response = client.PostAsync(url,content).Result;
-            if(response.IsSuccessStatusCode)
+            if (ModelState.IsValid)
             {
-                TempData["insert-message"] = "User Added...";
-                return RedirectToAction("Index");
+                // Hash the password before saving
+                string hashedPassword = _passwordService.HashPassword(std.password);
+                std.PasswordHash = hashedPassword;
+
+                string data = JsonConvert.SerializeObject(std);
+                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = client.PostAsync(url, content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["insert-message"] = "User Added...";
+                    return RedirectToAction("Index");
+                }
             }
             return View();
         }
@@ -67,13 +82,20 @@ namespace StringDivideWebApp.Controllers
         [HttpPost]
         public IActionResult Edit(StringDivideAppUser std)
         {
-            string data = JsonConvert.SerializeObject(std);
-            StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = client.PutAsync(url+std.Id, content).Result;
-            if (response.IsSuccessStatusCode)
+            if (ModelState.IsValid)
             {
-                TempData["update-message"] = "User updated...";
-                return RedirectToAction("Index");
+                // Hash the password before saving
+                string hashedPassword = _passwordService.HashPassword(std.password);
+                std.PasswordHash = hashedPassword;
+
+                string data = JsonConvert.SerializeObject(std);
+                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = client.PutAsync(url + std.Id, content).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["update-message"] = "User updated...";
+                    return RedirectToAction("Index");
+                }
             }
             return View();
         } 

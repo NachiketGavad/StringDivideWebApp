@@ -1,17 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using StringDivideWebApp.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace StringDivideWebApp.Controllers
 {
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPasswordService _passwordService;
 
-        public UserController( ApplicationDbContext context)
+        public UserController( ApplicationDbContext context, IPasswordService passwordService)
         {
             _context = context;
+            _passwordService = passwordService;
         }
+
         public IActionResult Index()
         {
             return View();
@@ -32,46 +37,57 @@ namespace StringDivideWebApp.Controllers
 
                 if (existingUser == null)
                 {
-                    // If the user does not exist, add them to the database
+                    // Hash the password before storing it in the database
+                    user.PasswordHash = _passwordService.HashPassword(user.password);
+
+                    // Add the user to the database
                     _context.StringDivideAppUsers.Add(user);
                     _context.SaveChanges();
+
                     return RedirectToAction("Login");
                 }
                 else
                 {
                     // If the user already exists, return an error indicating duplication
-                    ModelState.AddModelError("", "Error, Please check Email And Password");
-                    return View();
+                    ModelState.AddModelError("", "A user with the provided email already exists.");
                 }
             }
-            return View();
+
+            // If ModelState is not valid, return the view with validation errors
+            return View(user);
         }
+
 
         public IActionResult Login()
         {
             return View();
         }
-        
+
         [HttpPost]
         public IActionResult Login(StringDivideAppUser user)
         {
-            // Where always not null
-            //var myuser = _context.StringDivideAppUsers.Where(x=>x.email==user.email && x.password==user.password);
-            var myuser = _context.StringDivideAppUsers.FirstOrDefault(x => x.email == user.email && x.password == user.password);
+            // Find the user by email
+            var myuser = _context.StringDivideAppUsers.FirstOrDefault(x => x.email == user.email);
 
             if (myuser != null)
             {
-                HttpContext.Session.SetString("UserSession", user.email);
-                ViewBag.Mysession= HttpContext.Session.GetString("UserSession").ToString();
-                return RedirectToAction("Index","Home");
+                // Hash the provided password
+                string hashedPassword = _passwordService.HashPassword(user.password);
+
+                // Compare hashed passwords
+                if (myuser.PasswordHash == hashedPassword)
+                {
+                    // Authentication successful
+                    HttpContext.Session.SetString("UserSession", user.email);
+                    return RedirectToAction("Index", "Home");
+                }
             }
-            else
-            {
-                ModelState.AddModelError("", "Invalid email or password.");
-                return RedirectToAction("Login");
-            }
+
+            // Invalid email or password
+            ModelState.AddModelError("", "Invalid email or password.");
             return View();
         }
+
         public IActionResult Logout()
         {
             if (HttpContext.Session.GetString("UserSession") != null)
@@ -80,6 +96,5 @@ namespace StringDivideWebApp.Controllers
             }
             return RedirectToAction("Index", "Home");
         }
-
     }
 }
