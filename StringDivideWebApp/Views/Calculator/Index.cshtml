@@ -6,17 +6,21 @@
     ViewBag.myUser = @accessor.HttpContext.Session.GetString("UserSession");
 }
 
-<div class="container mt-5 col-md-5 text-center">
+<div id="calculator-container" class="container mt-5 col-md-3 text-center border py-3">
     @if (@accessor.HttpContext.Session.GetString("UserSession") != null)
     {
-        <partial name="_CalculatorPartialMain" />
+        @* <partial name="_CalculatorPartialMain" /> *@
+        <partial name="_CalculatorPartial" />
     }
     else
     {
         <partial name="_PartialPleaseLogin" />
     }
 </div>
-@section Scripts {
+
+<div id="result-container"></div>
+
+@* @section Scripts {
     <script>
         $(function () {
             $('#calculatorForm').submit(function (e) {
@@ -29,6 +33,32 @@
                         $('#result').text(response);
                     }
                 });
+            });
+        });
+    </script>
+} *@
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#calculator-container').on('click', 'button', function () {
+                var input = $(this).text();
+                if (input === '=') {
+                    var expression = $('#input').val();
+                    $.ajax({
+                        url: '@Url.Action("Calculate")',
+                        type: 'POST',
+                        data: { input: expression },
+                        success: function (response) {
+                            $('#result-container').html(response);
+                        }
+                    });
+                } else if (input === 'C') {
+                    $('#input').val('');
+                    $('#result-container').val('');
+                } else {
+                    $('#input').val($('#input').val() + input);
+                }
             });
         });
     </script>
