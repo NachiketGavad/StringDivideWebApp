@@ -5,11 +5,9 @@
     ViewData["Title"] = "Calculator";
     ViewBag.myUser = @accessor.HttpContext.Session.GetString("UserSession");
 }
-
-<div id="calculator-container" class="container mt-5 col-md-3 text-center border py-3">
-    @if (@accessor.HttpContext.Session.GetString("UserSession") != null)
+<div id="calculator-container" class="container mt-5 mx-auto text-center">
+    @if (ViewBag.myUser != null)
     {
-        @* <partial name="_CalculatorPartialMain" /> *@
         <partial name="_CalculatorPartial" />
     }
     else
