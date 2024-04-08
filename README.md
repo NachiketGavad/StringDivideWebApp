@@ -21,7 +21,7 @@ To divide the array of strings, follow these requirements:
 2. Click the "Submit" button to perform the operation.
 3. View the output displayed on the screen.
 4. The input and output are stored in the database for future reference.
-5. 
+
 ## Basic Calculator
 In addition to array operations, this application also features a basic calculator. You can perform simple arithmetic operations using the calculator provided.
 
